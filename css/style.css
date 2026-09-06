@@ -2508,3 +2508,21 @@ select.gen-input { appearance: none; cursor: pointer; }
   .pay-card { padding: 36px 20px; }
   .pay-actions .btn { width: 100%; }
 }
+
+/* ============================================================
+   Mobile overflow-proof fixes (2026-09-06)
+   1) Trust marquee inside the hero grid was blowing the column
+      out to the track width (hero copy 3200px+ wide on phones —
+      title/buttons/stats all stretched off-screen).
+   2) reveal-left/right slid content 46px sideways — on phones
+      that pushed sections off-screen / caused sideways scroll
+      while scrolling (services pipeline, about story/timeline).
+      On small screens they now just fade in.
+   ============================================================ */
+.hero-inner > * { min-width: 0; }
+.pf-marquee { width: 100%; max-width: 100%; }
+
+@media (max-width: 768px) {
+  .reveal-left, .reveal-right { transform: none; }
+  .reveal-left.visible, .reveal-right.visible { transform: none; }
+}
