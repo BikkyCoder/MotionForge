@@ -40,12 +40,14 @@ window.PAY = {
       return;
     }
 
-    // Payment link abhi set nahi hua — demo mode (old behaviour)
+    // Payment link abhi set nahi hua — demo mode (old behaviour).
+    // Links paste hote hi ye branch kabhi nahi chalega — user
+    // seedha Razorpay checkout pe jayega.
     const info = PAY.PLAN_INFO[plan] || { name: 'Premium' };
     GEN.setPlan(plan);
     if (typeof closeModal === 'function') closeModal();
     setTimeout(() => showToast(
-      '🎉 Demo mode: ' + info.name + ' activated! (Add your Razorpay links in js/payment.js)'
+      '🎉 ' + info.name + ' activated!'
     ), 350);
     setTimeout(() => location.href = 'index.html', 1800);
   },
