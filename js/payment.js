@@ -1,32 +1,28 @@
 /* ============================================================
    ImagineAI — Razorpay Payment Links
 
-   ⚠⚠⚠ YAHAN APNI CHEEZEIN DAALO ⚠⚠⚠
-   1) Razorpay dashboard → Payment Links → har plan ka link banao
-   2) Link banate waqt "After payment redirect" me daalo:
-        payment-success.html?plan=monthly
-        payment-success.html?plan=yearly
-        payment-success.html?plan=lifetime
-      (hosted site ka pura URL, jaise https://aapkisite.com/payment-success.html?plan=yearly)
-   3) Link copy karke neeche LINKS me paste karo
-   4) Apna WhatsApp number WHATSAPP me daalo (91XXXXXXXXXX)
+   LINKS: user ke Razorpay account se banaye gaye payment links
+   (2026-09-06). Buy button seedha Razorpay checkout pe le jata
+   hai — payment ke baad Razorpay user ko payment-success.html
+   pe redirect karta hai (redirect URL har link ke dashboard me
+   set hona chahiye — "After payment, redirect customer to").
 
-   Jab tak link empty hai, buy button demo mode me chalega
-   (turant activate — bina paise ke).
+   ⚠ WHATSAPP me abhi user ka number nahi hai — jab mile to
+   '91XXXXXXXXXX' ki jagah daalo.
    ============================================================ */
 
 window.PAY = {
   LINKS: {
-    monthly:  '', // ₹399/month
-    yearly:   '', // ₹499/year (launch offer plan)
-    lifetime: '', // ₹999 one-time
+    monthly:  'https://rzp.io/rzp/MNWXgcI', // ₹399/month
+    yearly:   'https://rzp.io/rzp/PLNOcoP', // ₹459/year (launch offer plan)
+    lifetime: 'https://rzp.io/rzp/TGhsGV0', // ₹999 one-time
   },
 
   WHATSAPP: '91XXXXXXXXXX', // ⚠ apna WhatsApp number (country code ke saath)
 
   PLAN_INFO: {
     monthly:  { name: 'Monthly Premium',  price: '₹399/month' },
-    yearly:   { name: 'Yearly Premium',   price: '₹499/year' },
+    yearly:   { name: 'Yearly Premium',   price: '₹459/year' },
     lifetime: { name: 'Lifetime Premium', price: '₹999 one-time' },
   },
 
@@ -57,7 +53,7 @@ window.PAY = {
     const wa = document.getElementById('waSupport');
     if (wa) {
       const num = (PAY.WHATSAPP || '').replace(/[^0-9]/g, '');
-      if (num) wa.href = 'https://wa.me/' + num;
+      if (num && num.length >= 10) wa.href = 'https://wa.me/' + num;
     }
 
     const box = document.getElementById('payStatus');
@@ -98,7 +94,7 @@ window.PAY = {
         '%0A• Payment ID: ' + paymentId +
         '%0APlease activate kijiye. 🙏';
       const num = (PAY.WHATSAPP || '').replace(/[^0-9]/g, '');
-      if (num) {
+      if (num && num.length >= 10) {
         document.getElementById('payWaBtn').href = 'https://wa.me/' + num + '?text=' + msg;
       }
     } else {
