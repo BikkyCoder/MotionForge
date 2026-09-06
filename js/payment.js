@@ -81,6 +81,16 @@ window.PAY = {
 
     if (paymentId) {
       document.getElementById('payId').textContent = paymentId;
+
+      // Payment confirmed by Razorpay (redirect happens only after
+      // successful payment) → activate the plan on this device right
+      // away. Static site, no backend needed.
+      if (plan && info) {
+        try { localStorage.setItem('imagineai_plan', plan); } catch (e) { /* private mode */ }
+        document.getElementById('payNote').innerHTML =
+          'Aapka plan <b>activate ho gaya hai</b> 🎉 — generator kholo aur apni image upload karo. Payment ID WhatsApp pe bhej do taaki hum aapka record rakh sakein. 👇';
+      }
+
       const msg = 'Namaste! 👋 Maine ImagineAI ka plan kharida hai.%0A• Plan: ' +
         (info ? info.name + ' — ' + info.price : 'Premium') +
         '%0A• Payment ID: ' + paymentId +
