@@ -239,6 +239,20 @@ function setupGenerator() {
     if (scLabel) scLabel.textContent = '🔒 Demo image locked — upgrade to upload your own:';
   }
 
+  /* ---------- The "Your Image" label points at the file input —
+     on phones, tapping the label would open the file picker
+     directly and bypass the upgrade modal. Block the input
+     itself for free users (demo image stays locked). ---------- */
+  fileInput.addEventListener('click', e => {
+    if (!GEN.isUnlimited()) {
+      e.preventDefault(); // stops the file picker from opening
+      openUpgradeModal(
+        'Want to upload your own image?',
+        'The free demo runs with the featured image. Upgrade to Premium to upload any image and turn it into a video.'
+      );
+    }
+  });
+
   dropzone.addEventListener('click', () => {
     if (!GEN.isUnlimited()) {
       openUpgradeModal(
@@ -256,6 +270,15 @@ function setupGenerator() {
   });
 
   fileInput.addEventListener('change', () => {
+    if (!GEN.isUnlimited()) {
+      // Safety net — free users can NEVER change the demo image.
+      fileInput.value = '';
+      openUpgradeModal(
+        'Want to upload your own image?',
+        'The free demo runs with the featured image. Upgrade to Premium to upload any image and turn it into a video.'
+      );
+      return;
+    }
     const file = fileInput.files && fileInput.files[0];
     if (!file) return;
     if (!file.type.startsWith('image/')) { showToast('Please choose an image file 📷'); return; }
