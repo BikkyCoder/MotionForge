@@ -13,9 +13,9 @@
 
 window.PAY = {
   LINKS: {
-    monthly:  'https://rzp.io/rzp/MNWXgcI', // ₹399/month
-    yearly:   'https://rzp.io/rzp/PLNOcoP', // ₹459/year (launch offer plan)
-    lifetime: 'https://rzp.io/rzp/TGhsGV0', // ₹999 one-time
+    monthly:  'https://rzp.io/rzp/JxiNsYI', // ₹399/month
+    yearly:   'https://rzp.io/rzp/Rhk7DjT', // ₹459/year (launch offer plan)
+    lifetime: 'https://rzp.io/rzp/gjNjaFT', // ₹799 one-time
   },
 
   WHATSAPP: '91XXXXXXXXXX', // ⚠ apna WhatsApp number (country code ke saath)
@@ -23,7 +23,7 @@ window.PAY = {
   PLAN_INFO: {
     monthly:  { name: 'Monthly Premium',  price: '₹399/month' },
     yearly:   { name: 'Yearly Premium',   price: '₹459/year' },
-    lifetime: { name: 'Lifetime Premium', price: '₹999 one-time' },
+    lifetime: { name: 'Lifetime Premium', price: '₹799 one-time' },
   },
 
   /* ---------- Buy button handler ---------- */
