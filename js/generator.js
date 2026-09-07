@@ -30,7 +30,7 @@ const GEN = {
   KEY_CREDITS: 'imagineai_credits',
 
   // Ready-made demo result video + default demo prompt
-  DEMO_VIDEO: 'images/WhatsApp Video 2026-09-04 at 12.30.16 PM.mp4',
+  DEMO_VIDEO: 'images/ai-8.mp4',
   DEMO_PROMPT: 'A majestic tiger running through a misty jungle at sunrise, golden light, cinematic camera',
 
   plan: () => localStorage.getItem(GEN.KEY_PLAN) || '',
