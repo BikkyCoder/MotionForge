@@ -73,11 +73,11 @@
     { n: 'Ayaan K.',  a: 'generated a 4K cinematic video',       t: '6 min ago',  c: G_SKY,  go: 'generator' },
     { n: 'Zara N.',   a: 'unlocked Unlimited Creation',          t: '9 min ago',  c: G_BLUE, go: 'premium' },
     { n: 'Vikram D.', a: 'claimed the launch offer 🎁',           t: '12 min ago', c: G_GOLD, go: 'premium' },
-    { n: 'Sneha R.',  a: 'turned her wedding photo into a video', t: '15 min ago', c: G_SKY,  go: 'generator' },
+    { n: 'Sneha R.',  a: 'turned her wedding idea into a video', t: '15 min ago', c: G_SKY,  go: 'generator' },
     { n: 'Arjun P.',  a: 'upgraded to Yearly — 2 years of AI video free', t: '18 min ago', c: G_BLUE, go: 'premium' },
     { n: 'Meera T.',  a: 'generated her first AI video ✨',        t: '22 min ago', c: G_GOLD, go: 'generator' },
     { n: 'Dev K.',    a: 'just unlocked the Lifetime deal',      t: '26 min ago',  c: G_SKY,  go: 'premium' },
-    { n: 'Ananya S.', a: 'animated her product photos',          t: '29 min ago',  c: G_BLUE, go: 'generator' },
+    { n: 'Ananya S.', a: 'animated her product ideas',            t: '29 min ago',  c: G_BLUE, go: 'generator' },
   ];
 
   let idx = 0;

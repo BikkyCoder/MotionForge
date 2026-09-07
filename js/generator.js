@@ -1,27 +1,27 @@
 /* ============================================================
-   ImagineAI — Image-to-Video Generator (Demo Engine)
+   ImagineAI — Text-to-Video Generator (Demo Engine)
 
    ⚠ IMPORTANT: This is the FRONT-END demo engine.
    Clicking Generate plays the ready-made demo result video
    (GEN.DEMO_VIDEO — a user-supplied mp4 in images/). When you
    get the real AI backend, replace that flow with your API call
-   (upload image → server returns a video URL → set it on
+   (send prompt → server returns a video URL → set it on
    the <video> element).
 
-   Fallback: if the demo video is missing, the Ken Burns engine
-   animates the uploaded image and records a REAL .webm video
-   in the browser using MediaRecorder.
+   Fallback: if the demo video is missing, the browser engine
+   animates the prompt text over a cinematic gradient and records
+   a REAL .webm video using MediaRecorder.
 
-   Everything else — upload UI, plans, free credits, gating —
-   already works exactly like the final product.
+   Everything else — prompt UI, plans, gating — already works
+   exactly like the final product.
 
    Plan system (localStorage):
      imagineai_plan    : '' (free) | 'monthly' | 'yearly' | 'lifetime'
      imagineai_credits : legacy counter (kept for the future backend)
 
    The demo video is ALWAYS free — free users can generate it as
-   many times as they want (the image stays locked to the demo
-   image until they upgrade).
+   many times as they want (the prompt stays locked to the demo
+   prompt until they upgrade).
    ============================================================ */
 
 const GEN = {
@@ -29,9 +29,9 @@ const GEN = {
   KEY_PLAN: 'imagineai_plan',
   KEY_CREDITS: 'imagineai_credits',
 
-  // Ready-made demo result video + default input image (user-supplied, in images/)
+  // Ready-made demo result video + default demo prompt
   DEMO_VIDEO: 'images/WhatsApp Video 2026-09-04 at 12.30.16 PM.mp4',
-  DEFAULT_IMAGE: 'images/WhatsApp Image 2026-09-04 at 1.00.13 PM.jpeg',
+  DEMO_PROMPT: 'A majestic tiger running through a misty jungle at sunrise, golden light, cinematic camera',
 
   plan: () => localStorage.getItem(GEN.KEY_PLAN) || '',
   setPlan(plan) {
@@ -95,12 +95,8 @@ function setupGenerator() {
   const form = document.getElementById('genForm');
   if (!form) return; // generator only lives on the home page
 
-  const dropzone = document.getElementById('dropzone');
-  const fileInput = document.getElementById('genImage');
-  const dzInner = document.getElementById('dzInner');
-  const dzPreview = document.getElementById('dzPreview');
-  const dzPreviewImg = document.getElementById('dzPreviewImg');
-  const dzRemove = document.getElementById('dzRemove');
+  const promptTa = document.getElementById('genPrompt');
+  const promptCount = document.getElementById('promptCount');
   const sampleChips = document.getElementById('sampleChips');
   const motionSelect = document.getElementById('genMotion');
   const durationSelect = document.getElementById('genDuration');
@@ -113,7 +109,7 @@ function setupGenerator() {
   const video = document.getElementById('genVideo');
   const downloadBtn = document.getElementById('downloadBtn');
 
-  const state = { img: null, url: null, live: null };
+  const state = { prompt: GEN.DEMO_PROMPT, url: null, live: null };
 
   const sleep = ms => new Promise(r => setTimeout(r, ms));
 
@@ -126,44 +122,75 @@ function setupGenerator() {
     'pulse':    { from: { s: 1.04, px: 0,      py: 0,      r: 0 },    to: { s: 1.16, px: 0,      py: 0,      r: 0 },    pulse: true }
   };
 
-  /* ---------- Draw one frame of the motion (Ken Burns) ---------- */
-  const drawFrame = (img, m, t, cvs) => {
+  /* ---------- Draw one frame of the scene (gradient + prompt text) ---------- */
+  const drawScene = (promptText, m, t, cvs) => {
     const W = cvs.width, H = cvs.height;
     const ctx = cvs.getContext('2d');
-    ctx.clearRect(0, 0, W, H);
 
-    const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; // easeInOutCubic
-    let et = ease(t);
+    // animated cinematic gradient background
+    const hue = (t * 360) % 360;
+    const g = ctx.createLinearGradient(0, 0, W, H);
+    g.addColorStop(0, 'hsl(' + hue + ', 65%, 45%)');
+    g.addColorStop(0.5, 'hsl(' + ((hue + 45) % 360) + ', 70%, 32%)');
+    g.addColorStop(1, 'hsl(' + ((hue + 90) % 360) + ', 75%, 22%)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
 
+    // drifting glow circles
+    ctx.save();
+    ctx.globalAlpha = 0.16;
+    ctx.fillStyle = '#ffffff';
+    for (let i = 0; i < 3; i++) {
+      const cx = W * (0.2 + 0.6 * Math.abs(Math.sin(t * Math.PI * 2 + i * 2.1)));
+      const cy = H * (0.2 + 0.6 * Math.abs(Math.cos(t * Math.PI * 2 + i * 1.3)));
+      ctx.beginPath();
+      ctx.arc(cx, cy, 60 + i * 32, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+
+    // motion transform (same presets as the real engine)
+    const ease = x => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; // easeInOutCubic
+    const et = ease(t);
+    const lerp = (a, b) => a + (b - a) * et;
     let s, px, py, r;
     if (m.pulse) {
       const wave = Math.sin(t * Math.PI * 2); // in-out-in breathing
       s = m.from.s + (m.to.s - m.from.s) * (0.5 + 0.5 * wave);
       px = py = r = 0;
     } else {
-      const lerp = (a, b) => a + (b - a) * et;
       s = lerp(m.from.s, m.to.s);
       px = lerp(m.from.px, m.to.px);
       py = lerp(m.from.py, m.to.py);
       r = lerp(m.from.r, m.to.r);
     }
 
-    // cover-fit source dims
-    const ir = img.width / img.height, cr = W / H;
-    let dw, dh;
-    if (ir > cr) { dh = img.height; dw = dh * cr; }
-    else { dw = img.width; dh = dw / cr; }
-
+    // prompt text, wrapped and centered
     ctx.save();
     ctx.translate(W / 2 + px * W, H / 2 + py * H);
     ctx.rotate(r * Math.PI / 180);
     ctx.scale(s, s);
-    ctx.drawImage(img, -dw / 2, -dh / 2, dw, dh);
+    ctx.fillStyle = 'rgba(255,255,255,0.95)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = '600 22px Inter, "Segoe UI", sans-serif';
+
+    const words = String(promptText).split(/\s+/);
+    const lines = [];
+    let line = '';
+    for (const w of words) {
+      if ((line + ' ' + w).trim().length > 34) { lines.push(line.trim()); line = w; }
+      else line = (line + ' ' + w).trim();
+    }
+    if (line) lines.push(line);
+    const lh = 30;
+    const startY = -((lines.length - 1) * lh) / 2;
+    lines.forEach((ln, i) => ctx.fillText(ln, 0, startY + i * lh));
     ctx.restore();
   };
 
   /* ---------- Render the video (real recording when possible) ---------- */
-  const renderMotion = async (img, m, duration, cvs, onProgress) => {
+  const renderMotion = async (promptText, m, duration, cvs, onProgress) => {
     const fps = 30;
     const frames = Math.max(Math.round(duration * fps), 1);
     cvs.width = 640; cvs.height = 360;
@@ -178,12 +205,12 @@ function setupGenerator() {
       rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
       rec.start(200);
     } catch (err) {
-      recording = false; // canvas tainted (e.g. file:// samples) → live-preview fallback
+      recording = false; // recording blocked → live-preview fallback
     }
 
     for (let f = 0; f < frames; f++) {
       const t = frames === 1 ? 1 : f / (frames - 1);
-      drawFrame(img, m, t, cvs);
+      drawScene(promptText, m, t, cvs);
       if (onProgress) onProgress((f + 1) / frames);
       await sleep(1000 / fps);
     }
@@ -198,147 +225,60 @@ function setupGenerator() {
   };
 
   /* ---------- Live animation loop (fallback when recording blocked) ---------- */
-  const startLiveLoop = (img, m, cvs) => {
+  const startLiveLoop = (promptText, m, cvs) => {
     cancelAnimationFrame(state.live);
     const period = 8000;
     const start = performance.now();
     const loop = now => {
       const t = ((now - start) % period) / period;
-      drawFrame(img, m, t, cvs);
+      drawScene(promptText, m, t, cvs);
       state.live = requestAnimationFrame(loop);
     };
     state.live = requestAnimationFrame(loop);
   };
 
-  /* ---------- Upload handling ---------- */
-  const showPreview = src => {
-    dzPreviewImg.src = src;
-    dzInner.style.display = 'none';
-    dzPreview.style.display = 'block';
-  };
-  const clearImage = () => {
-    state.img = null;
-    fileInput.value = '';
-    dzPreview.style.display = 'none';
-    dzInner.style.display = 'block';
-    sampleChips.querySelectorAll('.sample-chip').forEach(c => c.classList.remove('active'));
-  };
+  /* ---------- Prompt input ---------- */
+  const updateCount = () => { if (promptCount) promptCount.textContent = promptTa.value.length; };
+  promptTa.addEventListener('input', () => { state.prompt = promptTa.value; updateCount(); });
 
-  /* ---------- Default image: pre-set so the demo is one click ---------- */
-  const defaultImg = new Image();
-  defaultImg.onload = () => {
-    state.img = defaultImg;
-    showPreview(GEN.DEFAULT_IMAGE);
-  };
-  defaultImg.src = GEN.DEFAULT_IMAGE;
-
-  /* ---------- Free plan: the demo image is locked ---------- */
+  /* ---------- Free plan: the demo prompt is locked ---------- */
   if (!GEN.isUnlimited()) {
-    dzRemove.style.display = 'none';
+    promptTa.value = GEN.DEMO_PROMPT;
+    promptTa.readOnly = true;
     const scLabel = sampleChips.querySelector('.sc-label');
-    if (scLabel) scLabel.textContent = '🔒 Demo image locked — upgrade to upload your own:';
+    if (scLabel) scLabel.textContent = '🔒 Demo prompt locked — upgrade to write your own:';
+    updateCount();
+
+    // Any attempt to touch the prompt (tap, click, focus, keyboard)
+    // → upgrade modal. readOnly stops typing; these block the rest.
+    const lockPrompt = e => {
+      e.preventDefault();
+      openUpgradeModal(
+        'Want to write your own prompt?',
+        'The free demo runs with the featured prompt. Upgrade to Premium to write any prompt and turn it into a video.'
+      );
+    };
+    promptTa.addEventListener('click', lockPrompt);
+    promptTa.addEventListener('focus', lockPrompt);
+    promptTa.addEventListener('keydown', lockPrompt);
+  } else {
+    updateCount();
   }
 
-  /* ---------- The "Your Image" label points at the file input —
-     on phones, tapping the label would open the file picker
-     directly and bypass the upgrade modal. Block the input
-     itself for free users (demo image stays locked). ---------- */
-  fileInput.addEventListener('click', e => {
-    if (!GEN.isUnlimited()) {
-      e.preventDefault(); // stops the file picker from opening
-      openUpgradeModal(
-        'Want to upload your own image?',
-        'The free demo runs with the featured image. Upgrade to Premium to upload any image and turn it into a video.'
-      );
-    }
-  });
-
-  dropzone.addEventListener('click', () => {
-    if (!GEN.isUnlimited()) {
-      openUpgradeModal(
-        'Want to upload your own image?',
-        'The free demo runs with the featured image. Upgrade to Premium to upload any image and turn it into a video.'
-      );
-      return;
-    }
-    fileInput.click();
-  });
-  dzRemove.addEventListener('click', e => {
-    e.stopPropagation();
-    if (!GEN.isUnlimited()) return;
-    clearImage();
-  });
-
-  fileInput.addEventListener('change', () => {
-    if (!GEN.isUnlimited()) {
-      // Safety net — free users can NEVER change the demo image.
-      fileInput.value = '';
-      openUpgradeModal(
-        'Want to upload your own image?',
-        'The free demo runs with the featured image. Upgrade to Premium to upload any image and turn it into a video.'
-      );
-      return;
-    }
-    const file = fileInput.files && fileInput.files[0];
-    if (!file) return;
-    if (!file.type.startsWith('image/')) { showToast('Please choose an image file 📷'); return; }
-    if (file.size > 10 * 1024 * 1024) { showToast('Image is too big — max 10MB'); return; }
-    const reader = new FileReader();
-    reader.onload = () => {
-      const img = new Image();
-      img.onload = () => {
-        state.img = img;
-        showPreview(reader.result);
-        sampleChips.querySelectorAll('.sample-chip').forEach(c => c.classList.remove('active'));
-      };
-      img.src = reader.result;
-    };
-    reader.readAsDataURL(file);
-  });
-
-  /* drag & drop */
-  ['dragenter', 'dragover'].forEach(ev => dropzone.addEventListener(ev, e => {
-    e.preventDefault();
-    dropzone.classList.add('dragover');
-  }));
-  ['dragleave', 'drop'].forEach(ev => dropzone.addEventListener(ev, e => {
-    e.preventDefault();
-    dropzone.classList.remove('dragover');
-  }));
-  dropzone.addEventListener('drop', e => {
-    if (!GEN.isUnlimited()) {
-      openUpgradeModal(
-        'Want to upload your own image?',
-        'The free demo runs with the featured image. Upgrade to Premium to upload any image and turn it into a video.'
-      );
-      return;
-    }
-    const file = e.dataTransfer.files && e.dataTransfer.files[0];
-    if (!file) return;
-    const dt = new DataTransfer();
-    dt.items.add(file);
-    fileInput.files = dt.files;
-    fileInput.dispatchEvent(new Event('change'));
-  });
-
-  /* ---------- Sample images ---------- */
-  sampleChips.querySelectorAll('.sample-chip').forEach(chip => {
+  /* ---------- Sample prompts ---------- */
+  sampleChips.querySelectorAll('.prompt-chip').forEach(chip => {
     chip.addEventListener('click', () => {
       if (!GEN.isUnlimited()) {
         openUpgradeModal(
-          'Want to try more images?',
-          'The free demo runs with the featured image. Upgrade to Premium to unlock sample images and upload your own.'
+          'Want to try more prompts?',
+          'The free demo runs with the featured prompt. Upgrade to Premium to unlock all sample prompts and write your own.'
         );
         return;
       }
-      const src = chip.dataset.sample;
-      const img = new Image();
-      img.onload = () => {
-        state.img = img;
-        showPreview(src);
-        sampleChips.querySelectorAll('.sample-chip').forEach(c => c.classList.toggle('active', c === chip));
-      };
-      img.src = src;
+      promptTa.value = chip.dataset.prompt;
+      state.prompt = chip.dataset.prompt;
+      updateCount();
+      sampleChips.querySelectorAll('.prompt-chip').forEach(c => c.classList.toggle('active', c === chip));
     });
   });
 
@@ -352,14 +292,15 @@ function setupGenerator() {
   form.addEventListener('submit', async e => {
     e.preventDefault();
 
-    if (!state.img) {
-      showToast('Upload an image or pick a sample first 📷');
+    state.prompt = (promptTa.value || '').trim();
+    if (!state.prompt) {
+      showToast('Write a prompt first ✍️');
       return;
     }
 
     // The demo video is always free — no credit gating here.
-    // (Free users stay locked to the demo image; uploading their
-    //  own image is what needs a plan.)
+    // (Free users stay locked to the demo prompt; writing their
+    //  own prompt is what needs a plan.)
 
     const motion = MOTIONS[motionSelect.value] || MOTIONS['zoom-in'];
     const duration = parseInt(durationSelect.value, 10) || 5;
@@ -377,16 +318,19 @@ function setupGenerator() {
 
     // stage 1-2
     loading.classList.add('active');
-    setStage('Analyzing your image…', 6);
+    setStage('Analyzing your prompt…', 6);
     await sleep(950);
-    setStage('Understanding motion…', 22);
+    setStage('Understanding your scene…', 22);
     await sleep(950);
 
     // stage 3 — the AI engine. For now it plays the ready-made demo result
-    // video (the real image-to-video backend plugs in here later).
+    // video (the real text-to-video backend plugs in here later).
     setStage('Rendering frames…', 32);
     const demoOk = await new Promise(res => {
-      const done = ok => { video.onloadeddata = video.onerror = null; res(ok); };
+      // safety timeout — agar demo video load na ho (stalled/blocked)
+      // to 4s baad scene-engine fallback pe chale jao
+      const to = setTimeout(() => done(false), 4000);
+      const done = ok => { clearTimeout(to); video.onloadeddata = video.onerror = null; res(ok); };
       video.onloadeddata = () => done(true);
       video.onerror = () => done(false);
       video.src = GEN.DEMO_VIDEO;
@@ -413,10 +357,10 @@ function setupGenerator() {
       downloadBtn.style.display = 'inline-flex';
       showToast('🎬 Your video is ready!');
     } else {
-      // demo video missing → fall back to the in-browser Ken Burns engine
+      // demo video missing → fall back to the in-browser scene engine
       video.removeAttribute('src');
       video.style.display = 'none';
-      const result = await renderMotion(state.img, motion, duration, canvas,
+      const result = await renderMotion(state.prompt, motion, duration, canvas,
         p => setStage('Rendering frames… ' + Math.round(p * 100) + '%', 32 + Math.round(p * 50)));
       loading.classList.remove('active');
       if (result.recording && result.url) {
@@ -431,7 +375,7 @@ function setupGenerator() {
         // last resort: live animation preview
         canvas.style.display = 'block';
         frame.classList.add('has-image');
-        startLiveLoop(state.img, motion, canvas);
+        startLiveLoop(state.prompt, motion, canvas);
         showToast('Live preview mode — run via local server to export video files');
       }
     }

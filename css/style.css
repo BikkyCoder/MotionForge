@@ -2526,3 +2526,60 @@ select.gen-input { appearance: none; cursor: pointer; }
   .reveal-left, .reveal-right { transform: none; }
   .reveal-left.visible, .reveal-right.visible { transform: none; }
 }
+
+/* ============================================================
+   Text-to-video generator — prompt box & chips (2026-09-07)
+   ============================================================ */
+.prompt-box {
+  position: relative;
+  background: var(--bg-card);
+  border: 1.5px dashed rgba(37, 99, 235, 0.35);
+  border-radius: 14px;
+  padding: 14px 14px 26px;
+  transition: border-color 0.25s;
+}
+.prompt-box:focus-within { border-color: var(--violet, #2563eb); }
+
+.prompt-ta {
+  width: 100%;
+  min-height: 100px;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: vertical;
+  font: inherit;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--text);
+}
+.prompt-ta::placeholder { color: var(--text-faint); }
+.prompt-ta[readonly] { cursor: pointer; }
+
+.prompt-counter {
+  position: absolute;
+  bottom: 7px;
+  right: 12px;
+  font-size: 0.7rem;
+  color: var(--text-faint);
+}
+
+.prompt-chip {
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+  padding: 8px 13px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.25s, background 0.25s, color 0.25s;
+  white-space: nowrap;
+}
+.prompt-chip:hover, .prompt-chip.active {
+  border-color: var(--violet, #2563eb);
+  background: rgba(37, 99, 235, 0.08);
+  color: var(--violet, #2563eb);
+}
+@media (max-width: 520px) {
+  .prompt-chip { font-size: 0.75rem; padding: 7px 10px; }
+}

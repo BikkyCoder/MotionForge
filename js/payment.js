@@ -86,7 +86,7 @@ window.PAY = {
       if (plan && info) {
         try { localStorage.setItem('imagineai_plan', plan); } catch (e) { /* private mode */ }
         document.getElementById('payNote').innerHTML =
-          'Aapka plan <b>activate ho gaya hai</b> 🎉 — generator kholo aur apni image upload karo. Payment ID WhatsApp pe bhej do taaki hum aapka record rakh sakein. 👇';
+          'Aapka plan <b>activate ho gaya hai</b> 🎉 — generator kholo aur apna prompt likh kar video banao. Payment ID WhatsApp pe bhej do taaki hum aapka record rakh sakein. 👇';
       }
 
       const msg = 'Namaste! 👋 Maine ImagineAI ka plan kharida hai.%0A• Plan: ' +

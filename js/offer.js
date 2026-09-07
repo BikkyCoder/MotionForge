@@ -2,7 +2,7 @@
    ImagineAI — Launch Offer countdown
 
    Offer: buy any plan before 25 September 2026 and get
-   12 months of unlimited image-to-video creation FREE.
+   12 months of unlimited text-to-video creation FREE.
 
    After the deadline, every element marked with
    data-offer-banner hides itself automatically.

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ImagineAI — Turn Images into Stunning Videos</title>
-  <meta name="description" content="ImagineAI is a powerful AI image-to-video generator. Upload any image and watch our AI turn it into a smooth, cinematic video in seconds.">
+  <title>ImagineAI — Turn Text into Stunning Videos</title>
+  <meta name="description" content="ImagineAI is a powerful AI text-to-video generator. Write any prompt and watch our AI turn it into a smooth, cinematic video in seconds.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,7 +15,7 @@
 
   <!-- ===== Launch Offer Ribbon ===== -->
   <div class="offer-ribbon" data-offer-banner>
-    🎁 Launch Offer: ₹459/Year plan — buy before <b>25 September 2026</b> → get 1 Year of Unlimited image-to-video FREE
+    🎁 Launch Offer: ₹459/Year plan — buy before <b>25 September 2026</b> → get 1 Year of Unlimited text-to-video FREE
     <a href="premium.html">Grab the Offer →</a>
   </div>
 
@@ -59,10 +59,10 @@
     <div class="container hero-inner">
       <div class="hero-copy">
         <span class="eyebrow reveal">AI Video Generation</span>
-        <h1 class="hero-title reveal d-1">Turn Your <span class="grad-text">Images</span> Into Stunning Videos</h1>
+        <h1 class="hero-title reveal d-1">Turn Your <span class="grad-text">Ideas</span> Into Stunning Videos</h1>
         <p class="hero-sub reveal d-2">
-          Upload any photo and watch our AI bring it to life — smooth cinematic motion,
-          zoom, pan and orbit effects rendered into a real video in seconds.
+          Write any prompt and watch our AI bring it to life — cinematic scenes,
+          smooth motion and pro camera moves rendered into a real video in seconds.
         </p>
         <div class="hero-actions reveal d-3">
           <a href="#generator" class="btn btn-primary btn-lg">
@@ -98,8 +98,8 @@
           <span class="fc-tag">▶ Animated in 3.2s</span>
           <div class="fc-progress"><i></i></div>
           <p class="fc-prompt">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            Motion: Slow Zoom • 8s clip
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+            "A neon city at night, slow cinematic zoom"
           </p>
         </div>
         <div class="float-card fc-side">
@@ -120,36 +120,24 @@
       <div class="section-head reveal">
         <span class="eyebrow">Try It Now</span>
         <h2>Create Your First <span class="grad-text">AI Video</span></h2>
-        <p>Upload an image, pick a motion style, and get a real video. Try the demo as many times as you like — upgrade to unlock your own images.</p>
+        <p>Write a prompt, pick a motion style, and get a real video. Try the demo as many times as you like — upgrade to unlock your own prompts.</p>
       </div>
 
       <div class="generator-wrap reveal-zoom">
         <!-- Controls -->
         <form class="gen-panel" id="genForm" autocomplete="off">
           <div class="gen-field">
-            <label class="gen-label" for="genImage">Your Image</label>
-            <div class="dropzone" id="dropzone">
-              <input type="file" id="genImage" accept="image/*" hidden>
-              <div class="dz-inner" id="dzInner">
-                <div class="dz-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-                </div>
-                <div class="dz-title">Drop your image here, or <span class="grad-text">browse</span></div>
-                <div class="dz-sub">JPG, PNG or WebP • up to 10MB</div>
-              </div>
-              <div class="dz-preview" id="dzPreview" style="display:none">
-                <img id="dzPreviewImg" alt="Selected image preview">
-                <button type="button" class="dz-remove" id="dzRemove" aria-label="Remove image">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
-                </button>
-              </div>
+            <label class="gen-label" for="genPrompt">Your Prompt</label>
+            <div class="prompt-box" id="promptBox">
+              <textarea class="prompt-ta" id="genPrompt" rows="4" maxlength="300" placeholder="Describe your video, e.g. 'A majestic tiger running through a misty jungle at sunrise, cinematic camera'"></textarea>
+              <div class="prompt-counter"><span id="promptCount">0</span>/300</div>
             </div>
             <div class="sample-chips" id="sampleChips">
-              <span class="sc-label">No image? Try a sample:</span>
-              <button type="button" class="sample-chip" data-sample="images/gallery-1.jpg"><img src="images/gallery-1.jpg" alt="Sample 1"></button>
-              <button type="button" class="sample-chip" data-sample="images/gallery-2.jpg"><img src="images/gallery-2.jpg" alt="Sample 2"></button>
-              <button type="button" class="sample-chip" data-sample="images/gallery-3.jpg"><img src="images/gallery-3.jpg" alt="Sample 3"></button>
-              <button type="button" class="sample-chip" data-sample="images/gallery-4.jpg"><img src="images/gallery-4.jpg" alt="Sample 4"></button>
+              <span class="sc-label">No idea? Try a sample prompt:</span>
+              <button type="button" class="prompt-chip" data-prompt="A neon city skyline at night, rain reflecting colorful lights, slow cinematic zoom">🌆 Neon City</button>
+              <button type="button" class="prompt-chip" data-prompt="A majestic tiger walking through a misty jungle, golden morning light, epic camera">🐯 Misty Jungle</button>
+              <button type="button" class="prompt-chip" data-prompt="Waves crashing on a beach at sunset, seagulls flying, dreamy golden hour">🌊 Sunset Beach</button>
+              <button type="button" class="prompt-chip" data-prompt="An astronaut floating through a colorful nebula in deep space, 4K">🚀 Space Odyssey</button>
             </div>
           </div>
           <div class="gen-row">
@@ -194,14 +182,14 @@
               <div class="ph-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
               </div>
-              <p>Your AI video will play here. Upload an image, pick a motion and hit <b>Generate Video</b>.</p>
+              <p>Your AI video will play here. Write a prompt, pick a motion and hit <b>Generate Video</b>.</p>
             </div>
             <canvas id="genCanvas" class="gen-canvas" style="display:none"></canvas>
             <video id="genVideo" class="gen-video" style="display:none" controls loop playsinline muted></video>
             <div class="gen-loading" id="genLoading">
               <div class="loading-overlay">
                 <div class="loading-orb"></div>
-                <div class="stage-text" id="stageText">Analyzing your image…<span class="cursor"></span></div>
+                <div class="stage-text" id="stageText">Analyzing your prompt…<span class="cursor"></span></div>
                 <div class="stage-bar" id="stageBar"><i></i></div>
               </div>
             </div>
@@ -222,14 +210,14 @@
     <div class="container">
       <div class="section-head reveal">
         <span class="eyebrow">Why ImagineAI</span>
-        <h2>Everything You Need to <span class="grad-text">Bring Images to Life</span></h2>
+        <h2>Everything You Need to <span class="grad-text">Bring Ideas to Life</span></h2>
         <p>Powerful features built for creators, marketers, filmmakers and dreamers.</p>
       </div>
       <div class="features-grid">
         <div class="feature-card reveal">
           <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
-          <h3>Image-to-Video Magic</h3>
-          <p>Upload any photo and watch it become a smooth, cinematic video in seconds. No editing skills needed.</p>
+          <h3>Text-to-Video Magic</h3>
+          <p>Write any idea — a product shot, a landscape, a story scene — and watch it become a smooth, cinematic video in seconds. No editing skills needed.</p>
         </div>
         <div class="feature-card reveal d-1">
           <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg></div>
@@ -239,7 +227,7 @@
         <div class="feature-card reveal d-2">
           <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></div>
           <h3>Lightning Fast</h3>
-          <p>Our optimized pipeline animates most images in under 5 seconds — perfect for rapid content creation.</p>
+          <p>Our optimized pipeline renders most prompts in under 5 seconds — perfect for rapid content creation.</p>
         </div>
         <div class="feature-card reveal">
           <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg></div>
@@ -249,12 +237,12 @@
         <div class="feature-card reveal d-1">
           <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
           <h3>Private & Secure</h3>
-          <p>Your images and videos are encrypted and never shared. Your content stays yours.</p>
+          <p>Your prompts and videos are encrypted and never shared. Your ideas stay yours.</p>
         </div>
         <div class="feature-card reveal d-2">
           <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
           <h3>Works Everywhere</h3>
-          <p>Beautiful on desktop, tablet and phone — animate your photos on the go, from any device.</p>
+          <p>Beautiful on desktop, tablet and phone — create videos from your ideas on the go, from any device.</p>
         </div>
       </div>
     </div>
@@ -265,13 +253,13 @@
     <div class="container">
       <div class="section-head reveal">
         <span class="eyebrow">How It Works</span>
-        <h2>Three Steps to <span class="grad-text">Living Images</span></h2>
+        <h2>Three Steps to <span class="grad-text">Living Ideas</span></h2>
       </div>
       <div class="steps">
         <div class="step-card reveal">
           <div class="step-num">1</div>
-          <h3>Upload Your Image</h3>
-          <p>Drop any photo — a product shot, a landscape, your artwork. Or try one of our samples.</p>
+          <h3>Write Your Prompt</h3>
+          <p>Describe any scene — a product shot, a landscape, a story moment. Or try one of our sample prompts.</p>
           <svg class="step-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </div>
         <div class="step-card reveal d-1">
@@ -283,7 +271,7 @@
         <div class="step-card reveal d-2">
           <div class="step-num">3</div>
           <h3>Generate & Download</h3>
-          <p>Watch the AI animate your image frame by frame, then download your video. That's it!</p>
+          <p>Watch the AI bring your prompt to life frame by frame, then download your video. That's it!</p>
         </div>
       </div>
     </div>
@@ -367,7 +355,7 @@
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
           </div>
-          <blockquote>"I turned my concept art into cinematic cutscenes for my indie game. The motion presets feel hand-keyed by an animator — my players think I hired a whole studio."</blockquote>
+          <blockquote>"I turned my scene descriptions into cinematic cutscenes for my indie game. The motion presets feel hand-keyed by an animator — my players think I hired a whole studio."</blockquote>
           <div class="testi-user">
             <div class="testi-avatar av-1"><img src="images/testi-1.jpg" alt="Aarav Rathore"></div>
             <div><div class="who">Aarav Rathore</div><div class="role">Indie Game Developer</div></div>
@@ -382,7 +370,7 @@
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
           </div>
-          <blockquote>"We animate our product shots for Instagram Reels and ads. Static photos became scroll-stopping videos, and engagement jumped 3×. The Yearly plan paid for itself in one campaign."</blockquote>
+          <blockquote>"We generate our product videos for Instagram Reels and ads. Simple prompts became scroll-stopping videos, and engagement jumped 3×. The Yearly plan paid for itself in one campaign."</blockquote>
           <div class="testi-user">
             <div class="testi-avatar av-2"><img src="images/testi-2.jpg" alt="Sneha Kapoor"></div>
             <div><div class="who">Sneha Kapoor</div><div class="role">Marketing Lead, Brandlytics</div></div>
@@ -397,7 +385,7 @@
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
           </div>
-          <blockquote>"As an illustrator, my clients now ask for 'a little movement' on every piece. I animate my artwork in seconds with ImagineAI and deliver motion versions at no extra effort. Game changer."</blockquote>
+          <blockquote>"As a concept artist, my clients now ask for 'a little movement' on every idea. I turn descriptions into motion in seconds with ImagineAI and deliver video versions at no extra effort. Game changer."</blockquote>
           <div class="testi-user">
             <div class="testi-avatar av-3"><img src="images/testi-3.jpg" alt="Miguel Santos"></div>
             <div><div class="who">Miguel Santos</div><div class="role">Concept Illustrator</div></div>
@@ -411,8 +399,8 @@
   <section class="section">
     <div class="container">
       <div class="cta-banner reveal-zoom">
-        <h2>Ready to Bring Your Images <span class="grad-text">to Life?</span></h2>
-        <p>Try the free demo — no credit card required. Upgrade to unlock your own images.</p>
+        <h2>Ready to Bring Your Ideas <span class="grad-text">to Life?</span></h2>
+        <p>Try the free demo — no credit card required. Upgrade to unlock your own prompts.</p>
         <a href="#generator" class="btn btn-primary btn-lg">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           Start Creating Now
@@ -433,7 +421,7 @@
             </span>
             Imagine<span class="grad-text">AI</span>
           </a>
-          <p>Turn your images into stunning videos. The fastest, most beautiful AI image-to-video generator on the web.</p>
+          <p>Turn your ideas into stunning videos. The fastest, most beautiful AI text-to-video generator on the web.</p>
           <div class="footer-social">
             <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg></a>
             <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
@@ -490,7 +478,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l4 4 5-7 5 7 4-4-2 12H5L3 8z"/></svg>
       </div>
       <h3 class="m-title">Free limit reached!</h3>
-      <p class="m-text">Upgrade to unlock uploading your own images and unlimited AI video creation.</p>
+      <p class="m-text">Upgrade to unlock writing your own prompts and unlimited AI video creation.</p>
       <a href="premium.html" class="btn btn-primary btn-block btn-lg">View Premium Plans</a>
       <p class="m-note">🔒 Secure checkout · 7-day money-back · Instant activation</p>
     </div>
